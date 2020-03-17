@@ -26,7 +26,7 @@ module GraphQL
       #
       # @return [Object] A newly initialized GraphQL::Cache::Deconstructor instance
       def self.[](raw)
-        build_method = namify(raw.class.name)
+        build_method = raw.respond_to?(:batch) ? 'batch' : namify(raw.class.name)
         new(raw, build_method)
       end
 
@@ -47,6 +47,8 @@ module GraphQL
       def perform
         if method == 'lazy'
           raw.then { |resolved_raw| self.class[resolved_raw].perform }
+        elsif method == 'batch'
+          raw.sync
         elsif %(array collectionproxy).include? method
           deconstruct_array(raw)
         elsif raw.class.ancestors.include? GraphQL::Relay::BaseConnection
