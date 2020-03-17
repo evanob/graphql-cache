@@ -47,6 +47,7 @@ module GraphQL
       def to_s
         @to_s ||= [
           GraphQL::Cache.namespace,
+          context_clause,
           type_clause,
           field_clause,
           arguments_clause,
@@ -59,6 +60,10 @@ module GraphQL
         return nil unless object
 
         "#{object.class.name}:#{object_identifier}"
+      end
+
+      def context_clause
+        context.cache_key if context.respond_to?(:cache_key)
       end
 
       # Produces the portion of the key representing the parent type
