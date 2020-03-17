@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'graphql/cache/version'
-require 'graphql/cache/field'
+require 'graphql/cache/field_extension'
+require 'graphql/cache/object'
 require 'graphql/cache/key'
 require 'graphql/cache/marshal'
-require 'graphql/cache/fetcher'
 
 module GraphQL
   module Cache
@@ -40,14 +40,6 @@ module GraphQL
     # Default configuration
     @expiry    = 5400
     @namespace = 'graphql'
-
-    # Called by plugin framework in graphql-ruby to
-    # bootstrap necessary instrumentation and tracing
-    # tie-ins
-    def self.use(schema_def, options: {})
-      fetcher = ::GraphQL::Cache::Fetcher.new
-      schema_def.instrument(:field, fetcher)
-    end
   end
 end
 
